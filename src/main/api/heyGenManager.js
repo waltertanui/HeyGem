@@ -1,5 +1,6 @@
 import axios from 'axios'
 import log from '../logger.js'
+import { apiConfig } from '../config/config.js'
 
 class HeyGenAPIManager {
   constructor(apiKey, baseUrl = 'https://api.external-service.com/v1') {
@@ -7,7 +8,27 @@ class HeyGenAPIManager {
     this.baseUrl = baseUrl
     this.token = null
     this.queue = []
-    this.isProcessing = false
+    this.activeTasks = 0
+    this.maxConcurrentTasks = apiConfig.maxConcurrentTasks || 5
+  }
+
+  async processQueue() {
+    while (this.queue.length > 0 && this.activeTasks < this.maxConcurrentTasks) {
+      const task = this.queue.shift()
+      this.activeTasks++
+      
+      this.processTask(task)
+        .then(result => {
+          task.resolve(result)
+        })
+        .catch(error => {
+          task.reject(error)
+        })
+        .finally(() => {
+          this.activeTasks--
+          this.processQueue()
+        })
+    }
   }
 
   async authenticate() {
@@ -63,23 +84,6 @@ class HeyGenAPIManager {
     } catch (error) {
       log.error('Task status check failed:', error)
       throw error
-    }
-  }
-
-  async processQueue() {
-    if (this.isProcessing || this.queue.length === 0) return
-    
-    this.isProcessing = true
-    const task = this.queue.shift()
-    
-    try {
-      const result = await this.processTask(task)
-      task.resolve(result)
-    } catch (error) {
-      task.reject(error)
-    } finally {
-      this.isProcessing = false
-      this.processQueue()
     }
   }
 

@@ -26,7 +26,7 @@ export const assetPath = {
 
 export const apiConfig = {
   apiKey: 'your-api-key-here',
-  maxConcurrentTasks: 5,
+  maxConcurrentTasks: 10,  // Increase this value
   retryCount: 3,
   timeout: 30000
 }
