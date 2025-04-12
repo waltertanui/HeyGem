@@ -5,21 +5,28 @@ const isDev = process.env.NODE_ENV === 'development'
 const isWin = process.platform === 'win32'
 
 export const serviceUrl = {
-  face2face: isDev ? 'http://192.168.4.204:8383/easy' : 'http://127.0.0.1:8383/easy',
-  tts: isDev ? 'http://192.168.4.204:18180' : 'http://127.0.0.1:18180'
+  face2face: 'https://api.external-service.com/v1/video',  // Changed to external API
+  tts: 'https://api.external-service.com/v1/tts'           // Changed to external API
 }
 
 export const assetPath = {
   model: isWin
-    ? path.join('D:', 'heygem_data', 'face2face', 'temp')
-    : path.join(os.homedir(), 'heygem_data', 'face2face', 'temp'), // 模特视频
+    ? path.join('C:', 'heygem_data', 'face2face', 'temp')  // Changed from D: to C:
+    : path.join(os.homedir(), 'heygem_data', 'face2face', 'temp'),
   ttsProduct: isWin
-    ? path.join('D:', 'heygem_data', 'face2face', 'temp')
-    : path.join(os.homedir(), 'heygem_data', 'face2face', 'temp'), // TTS 产物
+    ? path.join('C:', 'heygem_data', 'face2face', 'temp')  // Changed from D: to C:
+    : path.join(os.homedir(), 'heygem_data', 'face2face', 'temp'),
   ttsRoot: isWin
-    ? path.join('D:', 'heygem_data', 'voice', 'data')
-    : path.join(os.homedir(), 'heygem_data', 'voice', 'data'), // TTS服务根目录
+    ? path.join('C:', 'heygem_data', 'voice', 'data')      // Changed from D: to C:
+    : path.join(os.homedir(), 'heygem_data', 'voice', 'data'),
   ttsTrain: isWin
-    ? path.join('D:', 'heygem_data', 'voice', 'data', 'origin_audio')
-    : path.join(os.homedir(), 'heygem_data', 'voice', 'data', 'origin_audio') // TTS 训练产物
+    ? path.join('C:', 'heygem_data', 'voice', 'data', 'origin_audio')  // Changed from D: to C:
+    : path.join(os.homedir(), 'heygem_data', 'voice', 'data', 'origin_audio')
+}
+
+export const apiConfig = {
+  apiKey: 'your-api-key-here',
+  maxConcurrentTasks: 5,
+  retryCount: 3,
+  timeout: 30000
 }
